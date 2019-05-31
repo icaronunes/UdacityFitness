@@ -1,14 +1,26 @@
 import React, { Component } from 'react'
-import { View, Text } from 'react-native'
-import { getMetricMetaInfo } from '../utils/helpers'
+import { View, Text, TouchableOpacity } from 'react-native'
+import { getMetricMetaInfo, timeToString } from '../utils/helpers'
+import { Ionicons } from '@expo/vector-icons'
 import UdaciSlider from './UdaciSlider'
 import UdaciSteppers from './UdaciSteppers'
+import DateHeader from './DateHeader';
+import TextButton from './TextButton'
 
+
+function SubmitBtn({ onPress }) {
+  return (
+    <TouchableOpacity onPress={onPress}>
+      <Text>Subimit</Text>
+    </TouchableOpacity>
+  )
+}
 export default class AddEntry extends Component {
+
   state = {
     run: 0,
     bike: 0,
-    swim: 0,
+    swim: 12,
     sleep: 0,
     eat: 0,
   }
@@ -42,11 +54,52 @@ export default class AddEntry extends Component {
     }))
   }
 
+  submit = () => {
+    const key = timeToString()
+    const entry = this.state
+
+    // Update Redux
+
+    this.setState(() => ({ run: 0, bike: 0, swim: 0, sleep: 0, eat: 0, }))
+
+    // Navigate to Home
+
+
+    // Save to DB
+
+    // Clear local notification
+
+  }
+
+  reset = () => {
+    const key = timeToString()
+
+    // Update Redux
+
+    // Route to Home
+
+    // Update "DB"
+  }
+
   render() {
     const metaInfo = getMetricMetaInfo()
 
+    if (true) {
+      return (
+        <View>
+          <Ionicons name='md-happy' size={100} />
+          <Text>You already logged your information for today.</Text>
+          <TextButton onPress={this.reset}>
+          Reset
+          </TextButton>
+        </View>
+      )
+    }
+
     return (
       <View>
+        <Text>{JSON.stringify(this.state)}</Text>
+        <DateHeader date={(new Date()).toLocaleDateString()} />
         {Object.keys(metaInfo).map((key) => {
           const { getIcon, type, ...rest } = metaInfo[key]
           const value = this.state[key]
@@ -69,6 +122,7 @@ export default class AddEntry extends Component {
             </View>
           )
         })}
+        <SubmitBtn onPress={this.submit} />
       </View>
     )
   }
